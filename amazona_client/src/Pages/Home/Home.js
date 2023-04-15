@@ -5,6 +5,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
+import Loading from '../../Shared/Loading.js';
+import MessageBox from '../../Shared/MessageBox.js';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -48,9 +50,9 @@ const Home = () => {
       <h2 className="mt-5">Featured Products</h2>
 
       {loading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : error ? (
-        <div>{error}</div>
+        <MessageBox variant="danger">{error} </MessageBox>
       ) : (
         <Row>
           {products.map((pd) => (

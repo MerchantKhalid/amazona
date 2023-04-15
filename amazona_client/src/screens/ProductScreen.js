@@ -4,6 +4,9 @@ import axios from 'axios';
 import { Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import Rating from '../Pages/HomaPageCard/Rating';
 import { Helmet } from 'react-helmet-async';
+import Loading from '../Shared/Loading';
+import MessageBox from '../Shared/MessageBox';
+import { getError } from '../Shared/utils';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -33,7 +36,7 @@ const ProductScreen = () => {
         const result = await axios.get(`/api/products/slug/${slug}`);
         dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
       } catch (error) {
-        dispatch({ type: 'FETCH_FAIL', payload: error.message });
+        dispatch({ type: 'FETCH_FAIL', payload: getError(error) });
       }
 
       // setProducts(result.data);
@@ -42,9 +45,9 @@ const ProductScreen = () => {
   }, [slug]);
   console.log(product);
   return loading ? (
-    <div>Loading...</div>
+    <Loading />
   ) : error ? (
-    <div>{error} </div>
+    <MessageBox variant="danger">{error} </MessageBox>
   ) : (
     <div>
       <Row>
