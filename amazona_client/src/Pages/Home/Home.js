@@ -4,7 +4,7 @@ import HomePageCard from '../HomaPageCard/HomePageCard.js';
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import logger from 'use-reducer-logger';
+import { Helmet } from 'react-helmet-async';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -21,7 +21,7 @@ const reducer = (state, action) => {
 
 const Home = () => {
   // const [products, setProducts] = useState([]);
-  const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+  const [{ loading, error, products }, dispatch] = useReducer(reducer, {
     products: [],
     loading: true,
     error: '',
@@ -42,22 +42,24 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <h2>Featured Products</h2>
-      <Container>
+      <Helmet>
+        <title>Amazona</title>
+      </Helmet>
+      <h2 className="mt-5">Featured Products</h2>
+
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>{error}</div>
+      ) : (
         <Row>
-          <Col xs={4} sm={6} lg={4}>
-            {loading ? (
-              <div>Loading...</div>
-            ) : error ? (
-              <div>{error}</div>
-            ) : (
-              products.map((pd) => (
-                <HomePageCard key={pd.slug} product={pd}></HomePageCard>
-              ))
-            )}
-          </Col>
+          {products.map((pd) => (
+            <Col key={pd.slug} sm={6} md={4} lg={3} className="mb-3">
+              <HomePageCard product={pd}></HomePageCard>
+            </Col>
+          ))}
         </Row>
-      </Container>
+      )}
     </div>
   );
 };

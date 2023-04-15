@@ -1,13 +1,16 @@
 import React from 'react';
-import Navbar from '../Shared/Navbar';
+import Header from '../Shared/Header.js';
 import { Outlet } from 'react-router-dom';
 import { Footer } from '../Shared/Footer';
+import { Container } from 'react-bootstrap';
 
 const Main = () => {
   return (
     <div>
-      <Navbar />
-      <Outlet />
+      <Header />
+      <Container className="mt-3 foot">
+        <Outlet />
+      </Container>
       <Footer />
     </div>
   );
