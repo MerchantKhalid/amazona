@@ -1,5 +1,5 @@
-import React, { useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useReducer } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import Rating from '../Pages/HomaPageCard/Rating';
@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import Loading from '../Shared/Loading';
 import MessageBox from '../Shared/MessageBox';
 import { getError } from '../Shared/utils';
+import { Store } from '../Context/Store';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -22,6 +23,7 @@ const reducer = (state, action) => {
 };
 const ProductScreen = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const { slug } = params;
   const [{ loading, error, product }, dispatch] = useReducer(reducer, {
     product: [],
@@ -43,7 +45,25 @@ const ProductScreen = () => {
     };
     fetchData();
   }, [slug]);
-  console.log(product);
+
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart } = state;
+
+  const handleAddToCart = async () => {
+    const existItems = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItems ? existItems.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    if (data.countInStock < quantity) {
+      window.alert('Sorry this product is out of stock');
+      return;
+    }
+    ctxDispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...product, quantity },
+    });
+    navigate('/cart');
+  };
+
   return loading ? (
     <Loading />
   ) : error ? (
@@ -105,7 +125,9 @@ const ProductScreen = () => {
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="warning">Add To Cart</Button>
+                      <Button onClick={handleAddToCart} variant="warning">
+                        Add To Cart
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}

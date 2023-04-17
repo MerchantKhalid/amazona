@@ -4,6 +4,7 @@ import Login from '../door/Login.js';
 import Register from '../door/Register.js';
 import Home from '../Pages/Home/Home.js';
 import ProductScreen from '../screens/ProductScreen.js';
+import CartScreen from '../screens/CartScreen.js';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: '/product/:slug',
         element: <ProductScreen></ProductScreen>,
+      },
+      {
+        path: '/cart',
+        element: <CartScreen></CartScreen>,
       },
     ],
   },
